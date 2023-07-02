@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Quiz">
+
+
+    <ImageView
+        android:id="@+id/background_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/quizbg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0" />
+
+    <TextView
+        android:id="@+id/n_questao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/opensans_bold"
+        android:text="Questão 1 de 5"
+        android:alpha="0.8"
+        android:textColor="@color/white"
+        android:textSize="13pt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/background_img"
+        app:layout_constraintVertical_bias="0.1" />
+
+    <TextView
+        android:id="@+id/tipo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/opensans_extrabold"
+        android:shadowColor="@color/black"
+        android:shadowDx="1"
+        android:shadowDy="20"
+        android:shadowRadius="5"
+        android:text="MOBILIDADE"
+        android:textColor="@color/white"
+        android:textSize="17pt"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/n_questao"
+        app:layout_constraintVertical_bias="0.01" />
+
+    <TextView
+        android:id="@+id/text_questao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="1"
+        android:fontFamily="@font/opensans_bold"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
+        android:text="Escolha a opção que melhor descreve sua mobilidade atualmente"
+        android:textColor="@color/white"
+        android:textSize="13pt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tipo"
+        app:layout_constraintVertical_bias="0.1" />
+
+    <Button
+        android:id="@+id/button_1"
+        android:layout_width="350dp"
+        android:layout_height="60dp"
+        android:background="@drawable/button_shape_blue"
+        android:fontFamily="@font/opensans_extrabold"
+        android:text="R1"
+        android:textColor="@color/roxo_app"
+        android:textSize="6pt"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_questao"
+        app:layout_constraintVertical_bias="0.1" />
+
+    <Button
+        android:id="@+id/button_2"
+        android:layout_width="350dp"
+        android:layout_height="60dp"
+        android:background="@drawable/button_shape_blue"
+        android:fontFamily="@font/opensans_extrabold"
+        android:text="R2"
+        android:textColor="@color/roxo_app"
+        android:textSize="6pt"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_1"
+        app:layout_constraintVertical_bias="0.06" />
+
+    <Button
+        android:id="@+id/button_3"
+        android:layout_width="350dp"
+        android:layout_height="60dp"
+        android:background="@drawable/button_shape_blue"
+        android:fontFamily="@font/opensans_extrabold"
+        android:text="R3"
+        android:textColor="@color/roxo_app"
+        android:textSize="6pt"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_2"
+        app:layout_constraintVertical_bias="0.1" />
+
+    <Button
+        android:id="@+id/button_confirmar"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:background="@drawable/text_shape_icon"
+        android:fontFamily="@font/opensans_extrabold"
+        android:text="CONFIRMAR"
+        android:textColor="@color/white"
+        android:textSize="10pt"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_3"
+        app:layout_constraintVertical_bias="0.5" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

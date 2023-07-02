@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".formulario_inicial">
+
+
+    <ImageView
+        android:id="@+id/background_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_info"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0" />
+
+    <TextView
+        android:id="@+id/text_questao"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:alpha="1"
+        android:fontFamily="@font/opensans_bold"
+        android:text="Para que tenha a melhor experiência possível pedimos que nos forneça as seguintes informações sobre você! "
+        android:textAlignment="center"
+        android:textColor="@color/roxo_app"
+        android:textSize="8pt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/background_img"
+        app:layout_constraintVertical_bias="0.3" />
+
+    <EditText
+        android:id="@+id/cidade"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="Cidade"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintStart_toStartOf="@+id/background_img"
+        app:layout_constraintTop_toBottomOf="@+id/text_questao"
+        app:layout_constraintVertical_bias="0.15"
+        app:layout_constraintWidth_percent=".8" />
+
+    <EditText
+        android:id="@+id/pais"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="País"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0
+"
+        app:layout_constraintStart_toStartOf="@+id/cidade"
+        app:layout_constraintTop_toBottomOf="@+id/cidade"
+        app:layout_constraintVertical_bias="0.05"
+        app:layout_constraintWidth_percent=".8" />
+
+    <EditText
+        android:id="@+id/idade"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="Idade"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toEndOf="@+id/cidade"
+        app:layout_constraintTop_toBottomOf="@+id/cidade"
+        app:layout_constraintVertical_bias="0.05"
+        app:layout_constraintWidth_percent=".8" />
+
+    <Spinner
+        android:id="@+id/disease"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape_icon"
+        android:drawablePadding="20dip"
+        android:entries="@array/meus_valores"
+        android:hint="Comorbidade"
+        android:paddingLeft="5dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:prompt="@string/selecione_um_valor"
+        android:textColorHint="@color/white"
+        android:theme="@style/SpinnerStyle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toEndOf="@+id/cidade"
+        app:layout_constraintTop_toBottomOf="@+id/text_questao"
+        app:layout_constraintVertical_bias="0.15"
+        app:layout_constraintWidth_percent=".8" />
+
+    <EditText
+        android:id="@+id/EndereçoResidencial"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="Endereço Residencial"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0
+"
+        app:layout_constraintStart_toStartOf="@+id/pais"
+        app:layout_constraintTop_toBottomOf="@+id/pais"
+        app:layout_constraintVertical_bias="0.05"
+        app:layout_constraintWidth_percent=".8" />
+
+    <EditText
+        android:id="@+id/NResidencial"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="Nº"
+        android:paddingLeft="15dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toEndOf="@+id/EndereçoResidencial"
+        app:layout_constraintTop_toBottomOf="@+id/pais"
+        app:layout_constraintVertical_bias="0.05"
+        app:layout_constraintWidth_percent=".8" />
+
+    <EditText
+        android:id="@+id/EndereçoTrabalho"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="Endereço Trabalho"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0
+"
+        app:layout_constraintStart_toStartOf="@+id/pais"
+        app:layout_constraintTop_toBottomOf="@+id/EndereçoResidencial"
+        app:layout_constraintVertical_bias="0.05"
+        app:layout_constraintWidth_percent=".8" />
+
+    <EditText
+        android:id="@+id/NTrabalho"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="Nº"
+        android:paddingLeft="15dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toEndOf="@+id/EndereçoResidencial"
+        app:layout_constraintTop_toBottomOf="@+id/NResidencial"
+        app:layout_constraintVertical_bias="0.05"
+        app:layout_constraintWidth_percent=".8" />
+
+    <Button
+        android:id="@+id/button_enviar"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:background="@drawable/text_shape_icon"
+        android:fontFamily="@font/opensans_extrabold"
+        android:text="enviar"
+        android:textColor="@color/white"
+        android:textSize="10pt"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EndereçoTrabalho"
+        app:layout_constraintVertical_bias="0.4" />
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

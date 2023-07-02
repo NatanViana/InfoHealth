@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:elevation="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dados"
+        app:layout_constraintVertical_bias="0.05"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/healthalert" />
+
+    <ImageView
+        android:id="@+id/background_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bgmain"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0" />
+
+
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:id="@+id/profile_image"
+        android:src="@drawable/perfil_mulher"
+        app:civ_border_color="@color/azul_cinza"
+        app:civ_border_width="8dp"
+        app:civ_shadow="false"
+        android:elevation="0.1dp"
+        app:civ_shadow_radius="3dp"
+        app:civ_shadow_color="@color/azul_cinza"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.05"/>
+
+
+    <ImageView
+        android:id="@+id/dados"
+        android:layout_width="350dp"
+        android:layout_height="400px"
+        android:src="@drawable/view_fundo"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/background_img"
+        app:layout_constraintStart_toStartOf="@+id/background_img"
+        app:layout_constraintTop_toTopOf="@+id/profile_image"
+        app:layout_constraintVertical_bias="0.30" />
+
+
+    <TextView
+        android:id="@+id/nome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/opensans_extrabold"
+        android:text="Meu Nome"
+        android:textColor="@color/roxo_app"
+        android:textSize="75px"
+        app:layout_constraintBottom_toBottomOf="@+id/dados"
+        app:layout_constraintEnd_toEndOf="@+id/dados"
+        app:layout_constraintStart_toStartOf="@+id/dados"
+        app:layout_constraintTop_toTopOf="@+id/dados"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <TextView
+        android:id="@+id/idade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/opensans_bold"
+        android:text="idade"
+        android:textColor="@color/roxo_app"
+        android:textSize="65px"
+        app:layout_constraintBottom_toBottomOf="@+id/dados"
+        app:layout_constraintEnd_toEndOf="@+id/dados"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="@+id/dados"
+        app:layout_constraintTop_toBottomOf="@+id/nome"
+        app:layout_constraintVertical_bias="0.2" />
+
+    <TextView
+        android:id="@+id/ofensiva"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/opensans_bold"
+        android:text="ofensiva"
+        android:textColor="@color/roxo_app"
+        android:textSize="65px"
+        app:layout_constraintBottom_toBottomOf="@+id/dados"
+        app:layout_constraintEnd_toStartOf="@+id/saúde"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/idade"
+        app:layout_constraintTop_toBottomOf="@+id/nome"
+        app:layout_constraintVertical_bias="0.2" />
+
+    <TextView
+        android:id="@+id/saúde"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/opensans_bold"
+        android:text="saúde"
+        android:textColor="@color/roxo_app"
+        android:textSize="65px"
+        app:layout_constraintBottom_toBottomOf="@+id/dados"
+        app:layout_constraintEnd_toEndOf="@+id/dados"
+        app:layout_constraintHorizontal_bias="0.85"
+        app:layout_constraintStart_toStartOf="@+id/dados"
+        app:layout_constraintTop_toBottomOf="@+id/nome"
+        app:layout_constraintVertical_bias="0.2" />
+
+    <TextView
+        android:id="@+id/disease_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/opensans_regular"
+        android:text="N/A"
+        android:textColor="@color/roxo_app"
+        android:textSize="55px"
+        app:layout_constraintBottom_toBottomOf="@+id/dados"
+        app:layout_constraintEnd_toEndOf="@+id/saúde"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/saúde"
+        app:layout_constraintTop_toTopOf="@+id/saúde"
+        app:layout_constraintVertical_bias="0.85" />
+
+    <TextView
+        android:id="@+id/age_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/opensans_regular"
+        android:text="N/A"
+        android:textColor="@color/roxo_app"
+        android:textSize="55px"
+        app:layout_constraintBottom_toBottomOf="@+id/dados"
+        app:layout_constraintEnd_toEndOf="@+id/idade"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/idade"
+        app:layout_constraintTop_toTopOf="@+id/idade"
+        app:layout_constraintVertical_bias="0.85" />
+
+    <TextView
+        android:id="@+id/streak_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/opensans_regular"
+        android:text="N/A"
+        android:textColor="@color/roxo_app"
+        android:textSize="55px"
+        app:layout_constraintBottom_toBottomOf="@+id/dados"
+        app:layout_constraintEnd_toStartOf="@+id/disease_text"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="@+id/idade"
+        app:layout_constraintTop_toTopOf="@+id/idade"
+        app:layout_constraintVertical_bias="0.85" />
+
+
+    <Button
+        android:id="@+id/sign_out"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:alpha="1"
+        android:background="@drawable/text_shape_icon"
+        android:fontFamily="@font/opensans_extrabold"
+        android:text="Sign Out"
+        android:textSize="10pt"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="@+id/background_img"
+        app:layout_constraintStart_toStartOf="@+id/background_img"
+        app:layout_constraintTop_toBottomOf="@+id/button_responder_questionario"
+        app:layout_constraintVertical_bias="0.2" />
+
+    <Button
+        android:id="@+id/button_responder_questionario"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:background="@drawable/text_shape_icon"
+        android:fontFamily="@font/opensans_extrabold"
+        android:text="QUESTIONÁRIOS COMPLETOS"
+        android:textSize="6pt"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="@+id/background_img"
+        app:layout_constraintStart_toStartOf="@+id/background_img"
+        app:layout_constraintTop_toTopOf="@+id/lottie"
+        app:layout_constraintVertical_bias="0.7" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

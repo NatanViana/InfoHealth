@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="meus_valores">
+        <item>🤍 Doença</item>
+        <item>NA</item>
+        <item>Saudável</item>
+        <item>Comorbidade</item>
+    </string-array>
+</resources>

@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".profile">
+
+    <ImageView
+        android:id="@+id/background_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/profile_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0" />
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/profile_image_2"
+        android:src="@drawable/perfil_mulher"
+        app:civ_border_color="@color/white"
+        app:civ_border_width="8dp"
+        app:civ_shadow="false"
+        android:elevation="0.1dp"
+        app:civ_shadow_radius="3dp"
+        app:civ_shadow_color="@color/azul_cinza"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.03"/>
+
+    <TextView
+        android:id="@+id/info_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="1"
+        android:drawablePadding="20dip"
+        android:fontFamily="@font/opensans_extrabold"
+        android:hint="Informações"
+        android:paddingTop="5dp"
+        android:textColorHint="@color/white"
+        android:textSize="8pt"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/background_img"
+        app:layout_constraintTop_toBottomOf="@+id/profile_image_2"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintWidth_percent=".8" />
+
+
+    <TextView
+        android:id="@+id/nome_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="1"
+        android:drawablePadding="20dip"
+        android:fontFamily="@font/opensans_extrabold"
+        android:hint="Nome"
+        android:paddingLeft="20dp"
+        android:textColorHint="@color/green_dark"
+        android:textSize="6pt"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="@+id/background_img"
+        app:layout_constraintTop_toBottomOf="@+id/info_title"
+        app:layout_constraintVertical_bias="0.00"
+        app:layout_constraintWidth_percent=".8" />
+
+
+    <EditText
+        android:id="@+id/nome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="Meu Nome"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="@+id/background_img"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="@+id/nome_title"
+        app:layout_constraintTop_toBottomOf="@+id/nome_title"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintWidth_percent=".8" />
+
+
+    <TextView
+        android:id="@+id/senha_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="1"
+        android:drawablePadding="20dip"
+        android:fontFamily="@font/opensans_extrabold"
+        android:hint="Senha"
+        android:paddingLeft="20dp"
+        android:textColorHint="@color/green_dark"
+        android:textSize="6pt"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="@+id/background_img"
+        app:layout_constraintTop_toBottomOf="@+id/nome"
+        app:layout_constraintVertical_bias="0.01"
+        app:layout_constraintWidth_percent=".8" />
+
+
+    <EditText
+        android:id="@+id/senha"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="*********"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="@+id/background_img"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="@+id/senha_title"
+        app:layout_constraintTop_toBottomOf="@+id/senha_title"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintWidth_percent=".8" />
+
+    <TextView
+        android:id="@+id/email_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="1"
+        android:drawablePadding="20dip"
+        android:fontFamily="@font/opensans_extrabold"
+        android:hint="Email"
+        android:paddingLeft="20dp"
+        android:textColorHint="@color/green_dark"
+        android:textSize="6pt"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="@+id/background_img"
+        app:layout_constraintTop_toBottomOf="@+id/senha"
+        app:layout_constraintVertical_bias="0.01"
+        app:layout_constraintWidth_percent=".8" />
+
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="myemail@email.com"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="@+id/background_img"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="@+id/email_title"
+        app:layout_constraintTop_toBottomOf="@+id/email_title"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintWidth_percent=".8" />
+
+    <TextView
+        android:id="@+id/cidade_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="1"
+        android:drawablePadding="20dip"
+        android:fontFamily="@font/opensans_extrabold"
+        android:hint="Cidade"
+        android:paddingLeft="20dp"
+
+        android:textColorHint="@color/green_dark"
+        android:textSize="6pt"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="@+id/background_img"
+        app:layout_constraintTop_toBottomOf="@+id/email"
+        app:layout_constraintVertical_bias="0.01"
+        app:layout_constraintWidth_percent=".8" />
+
+
+    <EditText
+        android:id="@+id/cidade"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="--------"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="@+id/background_img"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toStartOf="@+id/cidade_title"
+        app:layout_constraintTop_toBottomOf="@+id/cidade_title"
+        app:layout_constraintVertical_bias="0."
+        app:layout_constraintWidth_percent=".8" />
+
+
+    <TextView
+        android:id="@+id/pais_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="1"
+        android:drawablePadding="20dip"
+        android:fontFamily="@font/opensans_extrabold"
+        android:hint="País"
+        android:paddingLeft="20dp"
+        android:textColorHint="@color/green_dark"
+        android:textSize="6pt"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="@+id/background_img"
+        app:layout_constraintTop_toBottomOf="@+id/email"
+        app:layout_constraintVertical_bias="0.01"
+        app:layout_constraintWidth_percent=".8" />
+
+
+    <EditText
+        android:id="@+id/pais"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="------"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="@+id/background_img"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toStartOf="@+id/pais_title"
+        app:layout_constraintTop_toBottomOf="@+id/cidade_title"
+        app:layout_constraintVertical_bias="0."
+        app:layout_constraintWidth_percent=".8" />
+
+
+    <TextView
+        android:id="@+id/casa_n_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="1"
+        android:drawablePadding="20dip"
+        android:fontFamily="@font/opensans_extrabold"
+        android:hint="Nº"
+        android:paddingLeft="20dp"
+        android:textColorHint="@color/green_dark"
+        android:textSize="6pt"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.85"
+        app:layout_constraintStart_toStartOf="@+id/background_img"
+        app:layout_constraintTop_toBottomOf="@+id/cidade"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintWidth_percent=".8" />
+
+
+    <EditText
+        android:id="@+id/casa_n"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="---"
+        android:paddingLeft="18dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="@+id/background_img"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/casa_n_title"
+        app:layout_constraintTop_toBottomOf="@+id/casa_n_title"
+        app:layout_constraintVertical_bias="0."
+        app:layout_constraintWidth_percent=".8" />
+
+    <TextView
+        android:id="@+id/casa_endereço_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="1"
+        android:drawablePadding="20dip"
+        android:fontFamily="@font/opensans_extrabold"
+        android:hint=" Endereço Residencial"
+        android:paddingLeft="10dp"
+        android:textColorHint="@color/green_dark"
+        android:textSize="6pt"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@+id/cidade"
+        app:layout_constraintTop_toBottomOf="@+id/cidade"
+        app:layout_constraintVertical_bias="0.01"
+        app:layout_constraintWidth_percent=".8" />
+
+
+    <EditText
+        android:id="@+id/casa_endereço"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="-------------"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="@+id/background_img"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/casa_endereço_title"
+        app:layout_constraintTop_toBottomOf="@+id/casa_endereço_title"
+        app:layout_constraintVertical_bias="0."
+        app:layout_constraintWidth_percent=".8" />
+
+
+
+
+    <TextView
+        android:id="@+id/trabalho_n_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="1"
+        android:drawablePadding="20dip"
+        android:fontFamily="@font/opensans_extrabold"
+        android:hint="Nº"
+        android:paddingLeft="20dp"
+        android:textColorHint="@color/green_dark"
+        android:textSize="6pt"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.85"
+        app:layout_constraintStart_toStartOf="@+id/background_img"
+        app:layout_constraintTop_toBottomOf="@+id/casa_endereço"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintWidth_percent=".8" />
+
+
+    <EditText
+        android:id="@+id/trabalho_n"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="---"
+        android:paddingLeft="18dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="@+id/background_img"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/trabalho_n_title"
+        app:layout_constraintTop_toBottomOf="@+id/trabalho_n_title"
+        app:layout_constraintVertical_bias="0."
+        app:layout_constraintWidth_percent=".8" />
+
+    <TextView
+        android:id="@+id/trabalho_endereço_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="1"
+        android:drawablePadding="20dip"
+        android:fontFamily="@font/opensans_extrabold"
+        android:hint=" Endereço Trabalho"
+        android:paddingLeft="10dp"
+        android:textColorHint="@color/green_dark"
+        android:textSize="6pt"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@+id/casa_endereço"
+        app:layout_constraintTop_toBottomOf="@+id/casa_endereço"
+        app:layout_constraintVertical_bias="0.01"
+        app:layout_constraintWidth_percent=".8" />
+
+
+    <EditText
+        android:id="@+id/trabalho_endereço"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape"
+        android:drawablePadding="20dip"
+        android:hint="-------------"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColorHint="@color/roxo_app"
+        app:layout_constraintBottom_toBottomOf="@+id/background_img"
+        app:layout_constraintEnd_toEndOf="@+id/background_img"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/trabalho_endereço_title"
+        app:layout_constraintTop_toBottomOf="@+id/trabalho_endereço_title"
+        app:layout_constraintVertical_bias="0."
+        app:layout_constraintWidth_percent=".8" />
+
+
+    <Button
+        android:id="@+id/confirmar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_shape_icon"
+        android:fontFamily="@font/opensans_extrabold"
+        android:text="Confirmar"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trabalho_endereço"
+        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintWidth_percent="0.8" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
