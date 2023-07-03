@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.infohealth'
+    namespace 'com.tcc.infohealth'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.infohealth"
+        applicationId "com.tccnatan.infohealth"
         minSdk 24
         targetSdk 33
         versionCode 1

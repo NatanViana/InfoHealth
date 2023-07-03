@@ -11,24 +11,24 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/logo_infohealth_app"
+        android:icon="@mipmap/logo_infohealth_app_2"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.InfoHealth"
         tools:targetApi="31">
         <activity
-            android:name=".profile"
+            android:name="com.tccnatan.infohealth.profile"
             android:exported="false" />
         <activity
-            android:name=".formulario_inicial"
+            android:name="com.tccnatan.infohealth.formulario_inicial"
             android:exported="false"
             android:theme="@style/Theme.InfoHealth.NoActionBar" />
         <activity
-            android:name=".Quiz"
+            android:name="com.tccnatan.infohealth.Quiz"
             android:exported="false"
             android:theme="@style/Theme.InfoHealth.NoActionBar" />
         <activity
-            android:name=".entrada"
+            android:name="com.tccnatan.infohealth.entrada"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.InfoHealth.NoActionBar">
@@ -39,23 +39,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.tccnatan.infohealth.MainActivity"
             android:exported="false"
             android:stopWithTask="false" />
         <activity
-            android:name=".login"
+            android:name="com.tccnatan.infohealth.login"
             android:exported="false"
             android:theme="@style/Theme.InfoHealth.NoActionBar" />
 
         <service
-            android:name=".PushNotificationService"
+            android:name="com.tccnatan.infohealth.PushNotificationService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name=".MyForegroundService"
+            android:name="com.tccnatan.infohealth.MyForegroundService"
             android:stopWithTask="false" />
     </application>
 
