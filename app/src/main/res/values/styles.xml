@@ -5,4 +5,9 @@
         <item name="android:textColor">#FFFFFF</item> <!-- Define a cor do texto como branca -->
         <item name="android:background">@color/roxo_app</item>
     </style>
+
+    <style name="EditTextCustomStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textCursorDrawable">@drawable/custom_cursor</item>
+    </style>
+
 </resources>

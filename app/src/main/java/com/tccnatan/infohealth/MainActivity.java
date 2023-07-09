@@ -312,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
                             mp.start();
                             Intent pagina_notification = new Intent(getApplicationContext(),MainActivity.class);
                             pagina_notification.putExtra("nome","Notificação");
-                            PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this,1,pagina_notification,PendingIntent.FLAG_UPDATE_CURRENT);
+                            PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this,1,pagina_notification,PendingIntent.FLAG_IMMUTABLE);
                             Notification.Builder builder = null;
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                                 builder = new Notification.Builder(

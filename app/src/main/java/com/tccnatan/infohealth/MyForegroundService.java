@@ -1,5 +1,6 @@
 package com.tccnatan.infohealth;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -33,10 +34,7 @@ import java.time.Instant;
 import java.util.Calendar;
 
 import android.Manifest;
-
-
-
-
+import android.widget.Toast;
 
 
 public class MyForegroundService  extends Service {
@@ -421,12 +419,19 @@ public class MyForegroundService  extends Service {
         // Solicitar atualizações de localização
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            try {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            } catch (Exception e) {
+                // Lidar com exceções relacionadas à solicitação de atualizações de localização
+                e.printStackTrace();
+            }
         }
-        else{
-            latitude=-1;
-            longitude=-1;
-        }
+        else {
+                // Lidar com o caso em que as permissões não são concedidas
+                latitude = -1;
+                longitude = -1;
+            }
+        
 
         return super.onStartCommand(intent, flags, startId);
     }
