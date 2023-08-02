@@ -116,7 +116,7 @@ public class QLearning {
 
         Calendar calendario = Calendar.getInstance();
 
-        diadaSemana = calendario.get(Calendar.DAY_OF_WEEK);
+        this.diadaSemana = calendario.get(Calendar.DAY_OF_WEEK);
 
         switch (diadaSemana) {
             case Calendar.SUNDAY:
@@ -226,7 +226,7 @@ public class QLearning {
     }
 
     public static void main(String[] args) {
-        int numStates = 10;
+        /*int numStates = 10;
         int numActions = 4;
         double learningRate = 0.1;
         double discountFactor = 0.9;
@@ -266,7 +266,7 @@ public class QLearning {
             qLearning.printQValues();
 
             currentState = nextState;
-        }
+        }*/
     }
 
 

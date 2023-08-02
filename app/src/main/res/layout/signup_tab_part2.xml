@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         style="@style/EditTextCustomStyle"
         android:drawablePadding="20dip"
-        android:hint="Password"
+        android:hint="Password (6+ digitos)"
         android:textColorHint="@color/white"
         android:drawableLeft="@drawable/baseline_vpn_key_24"
         android:background="@drawable/text_shape_icon"

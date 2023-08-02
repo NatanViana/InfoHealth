@@ -59,6 +59,8 @@
         android:backgroundTint="@color/white"
         android:elevation="35dp"
         android:src="@drawable/logo_google2"
+        android:visibility="invisible"
+        android:clickable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

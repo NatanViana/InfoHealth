@@ -161,13 +161,13 @@ public class login extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 GSignIn();
+
             }
         });
 
     }
 
     private void GSignIn() {
-
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -175,7 +175,7 @@ public class login extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        google.setEnabled(false);
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             //dialog.show();
@@ -192,6 +192,7 @@ public class login extends AppCompatActivity {
                 //dialog.dismiss();
                 // ...
             }
+            google.setEnabled(true);
         }
     }
 
@@ -203,8 +204,8 @@ public class login extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            //Log.d(TAG, "signInWithCredential:success");
-
+                            Log.d(TAG, "signInWithCredential:success");
+                            Toast.makeText(login.this,"signInWithCredential:success",Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             DatabaseReference myRef = database.getReference();
                             nome = accountname;
@@ -212,7 +213,6 @@ public class login extends AppCompatActivity {
 
 
                             if(user!=null){
-
                                 myRef.child("Users").child(user.getUid()).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -244,6 +244,12 @@ public class login extends AppCompatActivity {
                                             myRef.child("Users").child(user.getUid()).child("Localização").child("Cidade").setValue("");
 
                                             myRef.child("Users").child(user.getUid()).child("Analises").child("SEMANA").setValue(0);
+                                            myRef.child("Users").child(user.getUid()).child("Analises").child("Gravar Semana").setValue(false);
+                                            myRef.child("Users").child(user.getUid()).child("Estado Atual").setValue(-1);
+                                            myRef.child("Users").child(user.getUid()).child("Flag Resposta").setValue(0);
+                                            myRef.child("Users").child(user.getUid()).child("Flag Resposta no Dia").setValue(0);
+                                            myRef.child("Users").child(user.getUid()).child("Nº notificações").child("Ignoradas_week").setValue(0);
+                                            myRef.child("Users").child(user.getUid()).child("Nº notificações").child("Respondidas_week").setValue(0);
 
 
                                             // Obtendo a data atual
@@ -254,6 +260,7 @@ public class login extends AppCompatActivity {
                                             String dataFormatada = dateFormat.format(calendar.getTime());
 
                                             myRef.child("Users").child(user.getUid()).child("Data de Acesso").setValue(dataFormatada);
+                                            myRef.child("Users").child(user.getUid()).child("Data de Referencia").setValue(dataFormatada);
                                             myRef.child("Users").child(user.getUid()).child("Ofensiva").setValue("0");
                                             myRef.child("Users").child(user.getUid()).child("Comorbidade").setValue("");
                                             myRef.child("Users").child(user.getUid()).child("Idade").setValue("");
@@ -271,7 +278,6 @@ public class login extends AppCompatActivity {
                                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(nome).build();
                                             user.updateProfile(profileUpdates);
                                             updateUI(user,user.getDisplayName());
-
                                         }
                                     }
 
@@ -359,6 +365,12 @@ public class login extends AppCompatActivity {
                             myRef.child("Users").child(user.getUid()).child("Localização").child("Cidade").setValue("");
 
                             myRef.child("Users").child(user.getUid()).child("Analises").child("SEMANA").setValue(0);
+                            myRef.child("Users").child(user.getUid()).child("Analises").child("Gravar Semana").setValue(false);
+                            myRef.child("Users").child(user.getUid()).child("Estado Atual").setValue(-1);
+                            myRef.child("Users").child(user.getUid()).child("Flag Resposta").setValue(0);
+                            myRef.child("Users").child(user.getUid()).child("Flag Resposta no Dia").setValue(0);
+                            myRef.child("Users").child(user.getUid()).child("Nº notificações").child("Ignoradas_week").setValue(0);
+                            myRef.child("Users").child(user.getUid()).child("Nº notificações").child("Respondidas_week").setValue(0);
 
                             // Obtendo a data atual
                             Calendar calendar = Calendar.getInstance();
@@ -368,6 +380,7 @@ public class login extends AppCompatActivity {
                             String dataFormatada = dateFormat.format(calendar.getTime());
 
                             myRef.child("Users").child(user.getUid()).child("Data de Acesso").setValue(dataFormatada);
+                            myRef.child("Users").child(user.getUid()).child("Data de Referencia").setValue(dataFormatada);
                             myRef.child("Users").child(user.getUid()).child("Ofensiva").setValue("0");
                             myRef.child("Users").child(user.getUid()).child("Comorbidade").setValue("");
                             myRef.child("Users").child(user.getUid()).child("Idade").setValue("");
@@ -418,7 +431,7 @@ public class login extends AppCompatActivity {
         DatabaseReference myRef = database.getReference();
 
         alert=0;
-
+        System.out.println("Indo para MainActivity");
 
         myRef.child("Users").child(user.getUid()).child("Localização").child("Alert").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -457,11 +470,13 @@ public class login extends AppCompatActivity {
         //Realizar mainactivity sem validar localização
         Intent pagina_usuario = new Intent(this,MainActivity.class);
         startActivity(pagina_usuario);
+        finish();
     }
 
     private void atividadeinfo() {
         Intent pagina_info= new Intent(this,formulario_inicial.class);
         startActivity(pagina_info);
+        finish();
     }
 
 

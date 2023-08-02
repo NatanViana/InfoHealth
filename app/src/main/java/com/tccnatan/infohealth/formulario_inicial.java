@@ -121,13 +121,13 @@ public class formulario_inicial extends AppCompatActivity {
     private void login() {
         Intent pagina_login = new Intent(this,login.class);
         startActivity(pagina_login);
-        //finish();
+        finish();
     }
 
     private void atividadeprincipal() {
         Intent pagina_usuario = new Intent(this,MainActivity.class);
         startActivity(pagina_usuario);
-        //finish();
+        finish();
     }
 
 }

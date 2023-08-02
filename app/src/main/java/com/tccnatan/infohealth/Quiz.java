@@ -53,6 +53,8 @@ public class Quiz extends AppCompatActivity {
 
     private DatabaseReference myRef;
 
+    private ValueEventListener value_listener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,6 +178,9 @@ public class Quiz extends AppCompatActivity {
         confirmar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Desabilita o botão "confirmar"
+                confirmar.setEnabled(false);
+
                 myRef.child("Users").child(user.getUid()).child("Respostas").child(""+respondidas).child("Q"+questao).setValue(resposta);
                 questao = questao+1;
                 if(questao<=5){
@@ -184,11 +189,13 @@ public class Quiz extends AppCompatActivity {
                 }
                 else{
                     myRef.child("Users").child(user.getUid()).child("Nº notificações").child("Respondidas").setValue(n);
+                    myRef.child("Users").child(user.getUid()).child("Flag Resposta").setValue(1);
                     myRef.child("Users").child(user.getUid()).child("Alert").child("alert").setValue("None");
                     updateUI(user,user.getDisplayName());
                 }
 
-
+                // Habilita o botão "confirmar" novamente
+                confirmar.setEnabled(true);
             }
 
         });
@@ -198,7 +205,11 @@ public class Quiz extends AppCompatActivity {
 
     public void ler_proms(DatabaseReference myRef,String prom,String variavel) {
 
-        myRef.child("Proms").child(prom).child(variavel).addValueEventListener(new ValueEventListener() {
+        if (value_listener != null) {
+            myRef.child("Proms").child(prom).child(variavel).removeEventListener(value_listener);
+        }
+
+        myRef.child("Proms").child(prom).child(variavel).addValueEventListener(value_listener= new ValueEventListener() {
             @SuppressLint("ResourceAsColor")
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -251,6 +262,7 @@ public class Quiz extends AppCompatActivity {
     }
 
     private void updateUI(FirebaseUser user,String nome_usuario) {
+
         finish();
     }
 

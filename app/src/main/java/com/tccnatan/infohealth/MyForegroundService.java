@@ -4,19 +4,24 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,8 +35,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.tcc.infohealth.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Date;
 
 import android.Manifest;
 import android.widget.Toast;
@@ -49,6 +58,8 @@ public class MyForegroundService  extends Service {
 
     private DatabaseReference myRef;
 
+    private ValueEventListener value_listener;
+
     int numStates = 504;
     int numActions = 2;
     double learningRate = 0.1;
@@ -63,6 +74,7 @@ public class MyForegroundService  extends Service {
     int flag =-1;
 
     int semanas = 0;
+    boolean gravar_semana = false;
 
     QLearning qLearning;
 
@@ -106,6 +118,17 @@ public class MyForegroundService  extends Service {
    double[][] qtable_firebase = new double[numStates][numActions];
 
    boolean servicerunning = true;
+
+   public String alert;
+   public Boolean alert_flag = true;
+
+   Boolean notify_control = false;
+   private final long[] pattern ={100, 300, 300, 300};
+
+   Calendar ref_day;
+
+    // Definindo o formato da data desejado
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     @Override
     public void onCreate() {
@@ -160,7 +183,7 @@ public class MyForegroundService  extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        // Verifica o comando recebido
+        // Verifica o comando recebido para no logout terminar o servico
         if (intent != null) {
             String act = intent.getAction();
             if (act != null) {
@@ -183,6 +206,7 @@ public class MyForegroundService  extends Service {
                         }
                         if(servicerunning){
                             System.out.println("Iniciando Novamente");
+                            createNotificationChannel();
                         }
 
                         // QLearning
@@ -190,7 +214,13 @@ public class MyForegroundService  extends Service {
                         ler_dados_single(myRef,"Recompensa Total");
                         ler_dados_single(myRef,"Analises");
                         ler_dados(myRef,"Localização");
+                        ler_dados(myRef, "Alert");
                         ler_dados_single(myRef,"Ofensiva");
+                        ler_dados_single(myRef,"Estado Atual");
+                        ler_dados_single(myRef,"Flag Resposta");
+                        ler_dados_single(myRef,"Flag Resposta no Dia");
+                        ler_dados_single(myRef,"Nº notificações");
+                        ler_dados_single(myRef,"Data de Referencia");
 
 
                         try {
@@ -199,7 +229,6 @@ public class MyForegroundService  extends Service {
                             qLearning.qTable = qtable_firebase;
                             referencia_resposta = notificações_respondidas +1 ;
 
-                            //qLearning.printQValues();
 
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -217,9 +246,14 @@ public class MyForegroundService  extends Service {
                                 action = qLearning.chooseAction(currentState);
                                 //System.out.println("Action:"+action+"---- State: "+nextState);
 
-                                if(action == 0){
-                                    myRef.child("Users").child(user.getUid()).child("Alert").child("alert").setValue("P1");
+                                // forçar não envio no objetivo cumprido do estado, terminal.
+                                if(flag_respordia==1){
+                                    action = 1;
+                                }
+
+                                if(action == 0 && alert_flag==false){
                                     notification_weeek = notification_weeek +1;
+                                    myRef.child("Users").child(user.getUid()).child("Alert").child("alert").setValue("P1");
                                 }
 
                                 flag = currentState;
@@ -253,11 +287,19 @@ public class MyForegroundService  extends Service {
                             //System.out.println("LOCAL: "+local +"latitude_t: "+latitude_trabalho+ "longitude_t: "+longitude_trabalho );
 
                             nextState = qLearning.getNextState(currentState, action, numStates, local);  // Função de próximo estado
-                            //System.out.println("Next State: "+nextState);
+                            //System.out.println("Next State: "+nextState+ " CurrentState = "+ currentState);
 
 
                             //System.out.println("N Respondidas: "+notificações_respondidas);
 
+                            try {
+                                Thread.sleep(5000); // Atraso de 5 segundos
+                                // Código a ser executado após o atraso de 5 segundos
+
+
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
 
 
                             if(nextState != currentState){
@@ -265,35 +307,45 @@ public class MyForegroundService  extends Service {
                                 // impedir erro com currentState no inicio ao ser -1.
                                 if(currentState != -1){
 
-                                    System.out.println("Dia da Semana: "+qLearning.diadaSemana+ "NextState = "+ nextState);
+                                    // Obtendo a data atual
+                                    Calendar calendarAtual = Calendar.getInstance();
+
+                                    String dataatual = dateFormat.format(calendarAtual.getTime());
+                                    String dataref = dateFormat.format(ref_day.getTime());
+
+                                    System.out.println("Data_Atual " +  dataatual + " Data_ref "+ dataref);
+
+                                    //System.out.println("Dia da Semana: "+qLearning.diadaSemana+ "NextState = "+ nextState + "CurrentState = "+ currentState);
                                     //System.out.println( "refrencia ="+referencia_dia + "ref resposta: "+referencia_resposta + "not res: "+ notificações_respondidas);
 
-                                    if(notificações_respondidas == referencia_resposta){
-                                        System.out.println("respondeu");
-                                        referencia_resposta = notificações_respondidas +1;
+                                    if(notificações_respondidas == referencia_resposta || flag_resposta ==1 ){
+                                        System.out.println("respondeu aqui");
+                                        referencia_resposta = notificações_respondidas + 1;
 
                                         // incremento de ofensiva 1 vez no dia em caso de resposta
-                                        if(flag_respordia==0 && (referencia_dia == qLearning.diadaSemana)){
+                                        if((flag_respordia==0 && dataatual.equals(dataref)) || (flag_resposta ==1 && !dataatual.equals(dataref))){
                                             System.out.println("aumentar ofensiva");
                                             ofensiva = ofensiva+1;
                                             myRef.child("Users").child(user.getUid()).child("Ofensiva").setValue(ofensiva);
-                                            flag_respordia = 1;
                                         }
 
                                         flag_resposta = 1;
+                                        flag_respordia = 1;
+                                        myRef.child("Users").child(user.getUid()).child("Flag Resposta no Dia").setValue(1);
                                         not_respondidas_week = not_respondidas_week +1;
-
-
+                                        //variaveis novas firebase
+                                        myRef.child("Users").child(user.getUid()).child("Nº notificações").child("Respondidas_week").setValue(not_respondidas_week);
                                     }
 
                                     if(action == 0 && flag_resposta == 0){
                                         myRef.child("Users").child(user.getUid()).child("Nº notificações").child("Ignoradas").setValue(notificações_ignoradas+1);
-
                                         not_ignoradas_week = not_ignoradas_week +1;
+                                        //variaveis novas firebase
+                                        myRef.child("Users").child(user.getUid()).child("Nº notificações").child("Ignoradas_week").setValue(not_ignoradas_week);
                                     }
 
                                     // verificar se zera ou não a ofensiva em caso de não resposta no dia
-                                    if(referencia_dia == qLearning.diadaSemana-1){
+                                    if(!dataatual.equals(dataref)){
                                         System.out.println("mudar dia");
 
                                         if(flag_respordia==0){
@@ -303,8 +355,13 @@ public class MyForegroundService  extends Service {
                                             myRef.child("Users").child(user.getUid()).child("Ofensiva").setValue(ofensiva);
                                         }
 
-                                        referencia_dia = qLearning.diadaSemana;
+                                        //Atualizar referencia
+                                        ref_day = calendarAtual;
+                                        // Obtendo a data formatada como uma string
+                                        String dataFormatada = dateFormat.format(ref_day.getTime());
+                                        myRef.child("Users").child(user.getUid()).child("Data de Referencia").setValue(dataFormatada);
                                         flag_respordia = 0;
+                                        myRef.child("Users").child(user.getUid()).child("Flag Resposta no Dia").setValue(0);
                                     }
 
 
@@ -327,30 +384,57 @@ public class MyForegroundService  extends Service {
                                 }
 
                                 currentState = nextState;
+                                //variaveis novas firebase
+                                myRef.child("Users").child(user.getUid()).child("Estado Atual").setValue(currentState);
 
-                                if(0<=currentState && currentState<=2){
+                                if(0<=currentState && currentState<=2 && gravar_semana == true ){
                                     System.out.println("Reward Total: "+reward_total);
                                     semanas = semanas + 1;
                                     System.out.println("Semanas Passadas: "+ semanas);
                                     System.out.println("Notificações da Semana: " + notification_weeek );
                                     //para analíses
                                     myRef.child("Users").child(user.getUid()).child("Analises").child("SEMANA").setValue(semanas);
-                                    myRef.child("Users").child(user.getUid()).child("Analises").child("Semanas").child(""+semanas).child("Notificações").setValue(notification_weeek);
+                                    myRef.child("Users").child(user.getUid()).child("Analises").child("Semanas").child(""+semanas).child("Notificações").setValue(not_respondidas_week+not_ignoradas_week);
                                     myRef.child("Users").child(user.getUid()).child("Analises").child("Semanas").child(""+semanas).child("Recompensa_Total").setValue(reward_total);
                                     myRef.child("Users").child(user.getUid()).child("Analises").child("Semanas").child(""+semanas).child("Not_Ignoradas").setValue(not_ignoradas_week);
                                     myRef.child("Users").child(user.getUid()).child("Analises").child("Semanas").child(""+semanas).child("Not_Respondidas").setValue(not_respondidas_week);
+
                                     notification_weeek = 0;
                                     not_ignoradas_week = 0;
                                     not_respondidas_week = 0;
+
+                                    //variaveis novas firebase
+                                    myRef.child("Users").child(user.getUid()).child("Nº notificações").child("Ignoradas_week").setValue(not_ignoradas_week);
+                                    myRef.child("Users").child(user.getUid()).child("Nº notificações").child("Respondidas_week").setValue(not_respondidas_week);
+
+                                    gravar_semana = false;
+                                    myRef.child("Users").child(user.getUid()).child("Analises").child("Gravar Semana").setValue(false);
+
                                 }
+                                else{
+
+                                    if(currentState>=3){
+
+                                        if(gravar_semana == false){
+
+                                            gravar_semana = true;
+                                            myRef.child("Users").child(user.getUid()).child("Analises").child("Gravar Semana").setValue(true);
+
+                                        }
+                                    }
+
+                                }
+
+
 
                                 flag = -1;
                                 flag_resposta = 0;
+                                myRef.child("Users").child(user.getUid()).child("Flag Resposta").setValue(0);
 
                                 // Flag no firebase para mandar notificação -> caso em false o app tem permissão novamente para mandar.
                                 myRef.child("Users").child(user.getUid()).child("Alert").child("Flag").setValue(false);
+                                alert_flag = false;
                                 myRef.child("Users").child(user.getUid()).child("Alert").child("alert").setValue("None");
-
 
 
                             }
@@ -378,11 +462,12 @@ public class MyForegroundService  extends Service {
         Notification.Builder builder = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             builder = new Notification.Builder(this, CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.logo_infohealth_app_round)
+                    .setSmallIcon(R.drawable.logo_icon)
+                    .setColor(Color.GREEN)
                     .setContentTitle("Foreground")
                     .setContentText("Q-learning is running")
-                    .setAutoCancel(true)
-                    .setVibrate(pattern);
+                    .setAutoCancel(false)
+                    .setOngoing(true);
         }
 
         startForeground(1001,builder.build());
@@ -461,7 +546,12 @@ public class MyForegroundService  extends Service {
 
     public void ler_dados(DatabaseReference myRef,String variavel) {
 
-        myRef.child("Users").child(user.getUid()).child(variavel).addValueEventListener(new ValueEventListener() {
+
+        if (value_listener != null) {
+            myRef.child("Proms").child(user.getUid()).child(variavel).removeEventListener(value_listener);
+        }
+
+        myRef.child("Users").child(user.getUid()).child(variavel).addValueEventListener(value_listener= new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
@@ -490,8 +580,52 @@ public class MyForegroundService  extends Service {
                     notificações_ignoradas = Integer.parseInt(ignoradas);
 
                 }
+                if(variavel=="Alert"){
+                    alert = ""+ dataSnapshot.child("alert").getValue();
+                    // alerta flag para não mandar se já tiver mandado
+                    alert_flag = Boolean.valueOf(""+ dataSnapshot.child("Flag").getValue());
+
+                    if(alert.equals("None")){
 
 
+                    }
+                    else{
+                        // se a flag for false pode mandar a notificação novamente.
+                        if(!alert_flag){
+                            notify_control = true;
+                            String message = "Novo Questionário PROMs";
+                            Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                            Intent pagina_notification = new Intent(getApplicationContext(),MainActivity.class);
+                            pagina_notification.putExtra("nome","Notificação");
+                            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),1,pagina_notification,PendingIntent.FLAG_IMMUTABLE);
+                            NotificationCompat.Builder builder = null;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                builder = new NotificationCompat.Builder(
+                                        getApplicationContext(), "My notification"
+                                )
+                                        .setSmallIcon(R.drawable.logo_icon)
+                                        .setColor(Color.GREEN)
+                                        .setContentTitle("Nova Notificação")
+                                        .setContentText(message)
+                                        .setAutoCancel(true)
+                                        .setDefaults(Notification.DEFAULT_SOUND)
+                                        //.setSound(alarmSound)
+                                        .setContentIntent(pendingIntent)
+                                        .setVibrate(pattern);
+                            }
+
+                            NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+                            notificationManager.notify(1,builder.build());
+                            FlagNotify();
+
+                        }
+                        else{
+                            notify_control = false;
+                        }
+
+                    }
+
+                }
 
             }
 
@@ -502,6 +636,29 @@ public class MyForegroundService  extends Service {
             }
 
         });
+    }
+
+    private void FlagNotify(){
+        if(notify_control){
+            System.out.println("Entrei");
+            // setar a true para não mandar novamente.
+            myRef.child("Users").child(user.getUid()).child("Alert").child("Flag").setValue(true);
+        }
+        else{
+            System.out.println("Não Entrei");
+        }
+
+    }
+
+    private void createNotificationChannel() {
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel channel = new NotificationChannel("My notification","My notification",NotificationManager.IMPORTANCE_HIGH);
+            channel.setSound(alarmSound, null);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+
     }
 
     public void ler_dados_single(DatabaseReference myRef,String variavel) {
@@ -525,7 +682,14 @@ public class MyForegroundService  extends Service {
 
 
                 }
+                if(variavel == "Nº notificações"){
 
+                    String respondidas_week = "" + String.valueOf(dataSnapshot.child("Respondidas_week").getValue());
+                    not_respondidas_week= Integer.parseInt(respondidas_week);
+                    String ignoradas_week = "" + String.valueOf(dataSnapshot.child("Ignoradas_week").getValue());
+                    not_ignoradas_week = Integer.parseInt(ignoradas_week);
+
+                }
                 if(variavel=="Recompensa Total"){
 
                     String val = "" + String.valueOf(dataSnapshot.getValue());
@@ -544,11 +708,49 @@ public class MyForegroundService  extends Service {
                     String val = "" + String.valueOf(dataSnapshot.child("SEMANA").getValue());
                     semanas = Integer.parseInt(val);
 
+                    String val2 = "" + String.valueOf(dataSnapshot.child("Gravar Semana").getValue());
+                    gravar_semana =  Boolean.valueOf(val2);
+
+
+                }
+                if(variavel == "Estado Atual"){
+
+                    String val = "" + String.valueOf(dataSnapshot.getValue());
+                    currentState = Integer.parseInt(val);
+
+                }
+                if(variavel == "Flag Resposta"){
+
+                    String val = "" + String.valueOf(dataSnapshot.getValue());
+                    flag_resposta = Integer.parseInt(val);
+
+                }
+                if(variavel == "Flag Resposta no Dia"){
+
+                    String val = "" + String.valueOf(dataSnapshot.getValue());
+                    flag_respordia = Integer.parseInt(val);
 
                 }
 
-            }
+                if(variavel == "Data de Referencia"){
 
+                    String val = "" + String.valueOf(dataSnapshot.getValue());
+
+                    // Convertendo a data de acesso do Firebase para um objeto Date
+                    Date dataReference = null;
+                    try {
+                        dataReference = dateFormat.parse(val);
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    // Convertendo o objeto Date para Calendar
+                    ref_day = Calendar.getInstance();
+                    ref_day.setTime(dataReference);
+
+
+                }
+            }
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value

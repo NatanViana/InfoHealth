@@ -49,7 +49,7 @@
         android:elevation="2dp"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/baseline_vpn_key_24"
-        android:hint="Password"
+        android:hint="Password (6+ digitos)"
         android:drawablePadding="20dip"
         android:textColorHint="@color/white"
         android:background="@drawable/text_shape_icon"

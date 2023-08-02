@@ -3,8 +3,10 @@ package com.tccnatan.infohealth;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
@@ -17,18 +19,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,10 +76,12 @@ public class MainActivity extends AppCompatActivity {
     TextView ofensiva;
     TextView idade;
 
+
     LottieAnimationView lottie_animation;
     Button responder_questionario;
     ImageView image_profile;
 
+    private ProgressBar progressBar;
 
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
@@ -82,19 +91,20 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser user;
 
     private DatabaseReference myRef;
+
+    private ValueEventListener value_listener;
     private Uri imageURi;
 
     String respondidas;
+
     String alert;
 
-    Boolean alert_flag;
-
-    Boolean notify_control = false;
     int res;
     private Bitmap bitmap;
 
-    private final long[] pattern ={100, 300, 300, 300};
     private static final int REQUEST_LOCATION_PERMISSION = 1;
+
+    private static final int PERMISSION_CODE = 123;
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -131,6 +141,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+
         sign_out = findViewById(R.id.sign_out);
         textView = findViewById(R.id.nome);
         saúde = findViewById(R.id.disease_text);
@@ -152,11 +166,18 @@ public class MainActivity extends AppCompatActivity {
 
         user = mAuth.getCurrentUser();
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel channel = new NotificationChannel("My notification","My notification",NotificationManager.IMPORTANCE_HIGH);
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-        }
+
+        // Simulando um tempo de carregamento
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Carregamento concluído, torna a barra de progresso invisível
+                //progressBar.setVisibility(View.INVISIBLE);
+                // Ou, se preferir remover completamente a barra de progresso
+                progressBar.setVisibility(View.GONE);
+            }
+        }, 3000); // Tempo de simulação de 3 segundos (substitua pelo tempo real de carregamento)
+
 
 
         if(user!=null){
@@ -174,11 +195,20 @@ public class MainActivity extends AppCompatActivity {
             login();
         }
 
-        serviceIntent = new Intent(this,MyForegroundService.class);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            ContextCompat.startForegroundService(this,serviceIntent);
+
+        // Verificar se a permissão já foi concedida
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // Solicitar permissão ao usuário
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        PERMISSION_CODE);
+            } else {
+
+            }
         }
-        foregroundServiceRunning();
+
 
         // Solicitar atualizações de localização
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -194,11 +224,22 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+
+        if(!foregroundServiceRunning()){
+            // Inicie o serviço de foreground
+            serviceIntent = new Intent(this,MyForegroundService.class);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                ContextCompat.startForegroundService(this,serviceIntent);
+            }
+        }
+
+
         responder_questionario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //textView.setText(respondidas);
-                Quiz(alert,respondidas);
+                //Sortear o PROM com P1 P2 P3  em novas versões..
+                Quiz("P1",respondidas);
 
 
             }
@@ -230,6 +271,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
 
     public void onLogout() {
 
@@ -278,7 +321,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void ler_dados(DatabaseReference myRef,String variavel) {
 
-        myRef.child("Users").child(user.getUid()).child(variavel).addValueEventListener(new ValueEventListener() {
+        if (value_listener != null) {
+            myRef.child("Proms").child(user.getUid()).child(variavel).removeEventListener(value_listener);
+        }
+
+        myRef.child("Users").child(user.getUid()).child(variavel).addValueEventListener(value_listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
@@ -287,7 +334,6 @@ public class MainActivity extends AppCompatActivity {
                 if(variavel=="Alert"){
                     alert = ""+ dataSnapshot.child("alert").getValue();
                     // alerta flag para não mandar se já tiver mandado
-                    alert_flag = Boolean.valueOf(""+ dataSnapshot.child("Flag").getValue());
 
                     if(alert.equals("None")){
                         responder_questionario.setBackgroundResource(R.drawable.text_shape_icon);
@@ -303,41 +349,11 @@ public class MainActivity extends AppCompatActivity {
                         lottie_animation.setAnimation(R.raw.healthalert);
                         responder_questionario.setAlpha(1);
                         responder_questionario.setClickable(true);
-                        // se a flag for false pode mandar a notificação novamente.
-                        if(!alert_flag){
-                            notify_control = true;
-                            String message = "Novo Questionário PROMs";
-                            Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                            MediaPlayer mp = MediaPlayer. create (getApplicationContext(), alarmSound);
-                            mp.start();
-                            Intent pagina_notification = new Intent(getApplicationContext(),MainActivity.class);
-                            pagina_notification.putExtra("nome","Notificação");
-                            PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this,1,pagina_notification,PendingIntent.FLAG_IMMUTABLE);
-                            Notification.Builder builder = null;
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                builder = new Notification.Builder(
-                                        getApplicationContext(), "My notification"
-                                )
-                                        .setSmallIcon(R.drawable.baseline_email_24)
-                                        .setContentTitle("Nova Notificação")
-                                        .setContentText(message)
-                                        .setAutoCancel(true)
-                                        .setSound(alarmSound)
-                                        .setContentIntent(pendingIntent)
-                                        .setVibrate(pattern);
-                            }
-
-                            NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-                            notificationManager.notify(1, builder.build());
-                            FlagNotify();
-                        }
-                        else{
-                            notify_control = false;
-                        }
 
                     }
 
                 }
+
                 if(variavel=="Nº notificações"){
                     respondidas = "" + String.valueOf(dataSnapshot.child("Respondidas").getValue());
                     res = Integer.parseInt(respondidas);
@@ -387,6 +403,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+
     }
 
 
@@ -454,18 +471,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void FlagNotify(){
-        if(notify_control){
-            System.out.println("Entrei");
-            // setar a true para não mandar novamente.
-            myRef.child("Users").child(user.getUid()).child("Alert").child("Flag").setValue(true);
-        }
-        else{
-            System.out.println("Não Entrei");
-        }
-
     }
 
 
