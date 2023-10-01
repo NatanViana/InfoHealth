@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(pagina_profile);
                 break;
             }
-            case R.id.logout:
+            /*case R.id.logout:
             {
                 Toast.makeText(MainActivity.this, "Logout selected", Toast.LENGTH_SHORT).show();
                 FirebaseAuth.getInstance().signOut();
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 login();
                 finish();
                 break;
-            }
+            }*/
 
         }
         return super.onOptionsItemSelected(item);
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
 
-        sign_out = findViewById(R.id.sign_out);
+        //sign_out = findViewById(R.id.sign_out);
         textView = findViewById(R.id.nome);
         saúde = findViewById(R.id.disease_text);
         idade = findViewById(R.id.age_text);
@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        sign_out.setOnClickListener(new View.OnClickListener() {
+        /*sign_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
                 finish();
 
             }
-        });
+        });*/
 
 
 
@@ -289,9 +289,11 @@ public class MainActivity extends AppCompatActivity {
         for(ActivityManager.RunningServiceInfo service : activityManager.getRunningServices(Integer.MAX_VALUE)){
 
             if(MyForegroundService.class.getName().equals(service.service.getClassName())){
+                System.out.println("Serviço esta em funcionamento..");
                 return true;
             }
         }
+        System.out.println("Serviço esta parado..");
         return  false;
 
     }
@@ -319,11 +321,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void ler_dados(DatabaseReference myRef,String variavel) {
-
-        if (value_listener != null) {
-            myRef.child("Proms").child(user.getUid()).child(variavel).removeEventListener(value_listener);
-        }
+    public void ler_dados (DatabaseReference myRef,String variavel) {
 
         myRef.child("Users").child(user.getUid()).child(variavel).addValueEventListener(value_listener = new ValueEventListener() {
             @Override
@@ -552,6 +550,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(pagina_quiz);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRef.removeEventListener(value_listener);
+    }
 
 }

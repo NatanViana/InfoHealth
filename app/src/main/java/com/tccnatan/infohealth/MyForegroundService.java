@@ -1,11 +1,15 @@
 package com.tccnatan.infohealth;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -48,6 +52,7 @@ import android.widget.Toast;
 
 public class MyForegroundService  extends Service {
 
+    private static final int JOB_ID = 1;
     Instant startTime;
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
@@ -174,7 +179,7 @@ public class MyForegroundService  extends Service {
 
         qLearning = new QLearning(numStates, numActions, learningRate, discountFactor, epsilon,referencia_dia,user,myRef,qtable_firebase);
 
-
+        System.out.println("Criando Serviço novamente!");
 
         super.onCreate();
 
@@ -195,6 +200,83 @@ public class MyForegroundService  extends Service {
                     stopSelf();
                 }
             }
+        }
+
+        final String CHANNEL_ID = "Foreground Service";
+        final long[] pattern ={100, 300, 300, 300};
+
+        NotificationChannel channel = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            channel = new NotificationChannel(CHANNEL_ID,CHANNEL_ID, NotificationManager.IMPORTANCE_LOW);
+        }
+        NotificationManager manager = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            manager = getSystemService(NotificationManager.class);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            manager.createNotificationChannel(channel);
+        }
+
+        Notification.Builder builder = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder = new Notification.Builder(this, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.logo_icon)
+                    .setColor(Color.GREEN)
+                    .setContentTitle("Foreground")
+                    .setContentText("Q-learning is running")
+                    .setAutoCancel(false)
+                    .setOngoing(true);
+        }
+
+        startForeground(1001,builder.build());
+
+        System.out.println("Agendando serviço...");
+        // Agendar o AlarmManager para acionar o BroadcastReceiver a cada 15 minutos
+        scheduleAlarm(this);
+
+        ler_dados(myRef,"Nº notificações");
+
+        // Inicializar o LocationManager
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // Inicializar o LocationListener
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                // Aqui você obtém as atualizações de localização do usuário
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+
+                // Faça o que for necessário com as coordenadas de localização
+
+                myRef.child("Users").child(user.getUid()).child("Localização").child("Latitude").setValue(latitude);
+                myRef.child("Users").child(user.getUid()).child("Localização").child("Longitude").setValue(longitude);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+            @Override
+            public void onProviderEnabled(String provider) {}
+
+            @Override
+            public void onProviderDisabled(String provider) {}
+        };
+
+        // Solicitar atualizações de localização
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            try {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            } catch (Exception e) {
+                // Lidar com exceções relacionadas à solicitação de atualizações de localização
+                e.printStackTrace();
+            }
+        }
+        else {
+            // Lidar com o caso em que as permissões não são concedidas
+            latitude = -1;
+            longitude = -1;
         }
 
         new Thread(
@@ -236,7 +318,7 @@ public class MyForegroundService  extends Service {
 
                         while(servicerunning){
 
-                            //System.out.println("Foreground Service is running...");
+                            System.out.println("Foreground Service is running...");
                             //int flag_estado = printMensagemAposUmMinuto();
 
 
@@ -248,6 +330,7 @@ public class MyForegroundService  extends Service {
 
                                 // forçar não envio no objetivo cumprido do estado, terminal.
                                 if(flag_respordia==1){
+
                                     action = 1;
                                 }
 
@@ -435,8 +518,14 @@ public class MyForegroundService  extends Service {
                                 myRef.child("Users").child(user.getUid()).child("Alert").child("Flag").setValue(false);
                                 alert_flag = false;
                                 myRef.child("Users").child(user.getUid()).child("Alert").child("alert").setValue("None");
-
-
+                                boolean simulateLowResources = false; // Simular falta de recursos
+                                if (simulateLowResources) {
+                                    // Simule a falta de recursos encerrando o serviço
+                                    servicerunning = false;
+                                    System.out.println("Matando o serviço");
+                                    stopForeground(true);
+                                    stopSelf();
+                                }
                             }
 
                         }
@@ -444,81 +533,9 @@ public class MyForegroundService  extends Service {
                 }
         ).start();
 
-        final String CHANNEL_ID = "Foreground Service";
-        final long[] pattern ={100, 300, 300, 300};
-
-        NotificationChannel channel = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channel = new NotificationChannel(CHANNEL_ID,CHANNEL_ID, NotificationManager.IMPORTANCE_LOW);
-        }
-        NotificationManager manager = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            manager = getSystemService(NotificationManager.class);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            manager.createNotificationChannel(channel);
-        }
-
-        Notification.Builder builder = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder = new Notification.Builder(this, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.logo_icon)
-                    .setColor(Color.GREEN)
-                    .setContentTitle("Foreground")
-                    .setContentText("Q-learning is running")
-                    .setAutoCancel(false)
-                    .setOngoing(true);
-        }
-
-        startForeground(1001,builder.build());
-
-        ler_dados(myRef,"Nº notificações");
-
-        // Inicializar o LocationManager
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        // Inicializar o LocationListener
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                // Aqui você obtém as atualizações de localização do usuário
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-
-                // Faça o que for necessário com as coordenadas de localização
-
-                myRef.child("Users").child(user.getUid()).child("Localização").child("Latitude").setValue(latitude);
-                myRef.child("Users").child(user.getUid()).child("Localização").child("Longitude").setValue(longitude);
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-            @Override
-            public void onProviderEnabled(String provider) {}
-
-            @Override
-            public void onProviderDisabled(String provider) {}
-        };
-
-        // Solicitar atualizações de localização
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            try {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            } catch (Exception e) {
-                // Lidar com exceções relacionadas à solicitação de atualizações de localização
-                e.printStackTrace();
-            }
-        }
-        else {
-                // Lidar com o caso em que as permissões não são concedidas
-                latitude = -1;
-                longitude = -1;
-            }
-        
-
-        return super.onStartCommand(intent, flags, startId);
+        System.out.println("Cheguei no start!");
+        return START_STICKY;
+        //return super.onStartCommand(intent, flags, startId);
     }
 
     // Função para verificar se o usuário está dentro do range de latitude e longitude
@@ -545,11 +562,6 @@ public class MyForegroundService  extends Service {
     }
 
     public void ler_dados(DatabaseReference myRef,String variavel) {
-
-
-        if (value_listener != null) {
-            myRef.child("Proms").child(user.getUid()).child(variavel).removeEventListener(value_listener);
-        }
 
         myRef.child("Users").child(user.getUid()).child(variavel).addValueEventListener(value_listener= new ValueEventListener() {
             @Override
@@ -760,13 +772,51 @@ public class MyForegroundService  extends Service {
         });
     }
 
+    private void scheduleAlarm(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(context, RestartServerReceiver.class);
+        intent.setAction("com.tccnatan.infohealth.START_FOREGROUND_SERVICE");
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        long intervalMillis = 1 * 60 * 1000; // 5 minutos
+
+        if (alarmManager != null) {
+            // Cancelar alarme anterior (se existir)
+            alarmManager.cancel(pendingIntent);
+
+            // Criar novo alarme
+            alarmManager.setRepeating(
+                    AlarmManager.RTC_WAKEUP,
+                    System.currentTimeMillis(),
+                    intervalMillis,
+                    pendingIntent
+            );
+        }
+        else{
+            // Criar novo alarme
+            alarmManager.setRepeating(
+                    AlarmManager.RTC_WAKEUP,
+                    System.currentTimeMillis(),
+                    intervalMillis,
+                    pendingIntent
+            );
+        }
+    }
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-
+        myRef.removeEventListener(value_listener);
+        if (locationManager != null && locationListener != null) {
+            locationManager.removeUpdates(locationListener);
+        }
     }
-
 
     @Nullable
     @Override

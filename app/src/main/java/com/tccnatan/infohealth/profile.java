@@ -67,7 +67,7 @@ public class profile extends AppCompatActivity {
 
     private DatabaseReference myRef;
 
-    private ValueEventListener value_listener;
+    //private ValueEventListener value_listener;
 
     String autenticacao;
 
@@ -272,12 +272,7 @@ public class profile extends AppCompatActivity {
 
     public void ler_dados(DatabaseReference myRef,String variavel) {
 
-
-        if (value_listener != null) {
-            myRef.child("Proms").child(user.getUid()).child(variavel).removeEventListener(value_listener);
-        }
-
-        myRef.child("Users").child(user.getUid()).child(variavel).addValueEventListener(value_listener = new ValueEventListener() {
+        myRef.child("Users").child(user.getUid()).child(variavel).addListenerForSingleValueEvent( new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
@@ -393,5 +388,12 @@ public class profile extends AppCompatActivity {
 
     private void atividadeprincipal() {
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("DESTRUINDOOOOOO...");
+        //myRef.removeEventListener(value_listener);
     }
 }

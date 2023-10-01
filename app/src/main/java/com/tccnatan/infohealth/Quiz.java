@@ -53,7 +53,7 @@ public class Quiz extends AppCompatActivity {
 
     private DatabaseReference myRef;
 
-    private ValueEventListener value_listener;
+    //private ValueEventListener value_listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,11 +205,7 @@ public class Quiz extends AppCompatActivity {
 
     public void ler_proms(DatabaseReference myRef,String prom,String variavel) {
 
-        if (value_listener != null) {
-            myRef.child("Proms").child(prom).child(variavel).removeEventListener(value_listener);
-        }
-
-        myRef.child("Proms").child(prom).child(variavel).addValueEventListener(value_listener= new ValueEventListener() {
+        myRef.child("Proms").child(prom).child(variavel).addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("ResourceAsColor")
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -261,9 +257,14 @@ public class Quiz extends AppCompatActivity {
         startActivity(pagina_login);
     }
 
-    private void updateUI(FirebaseUser user,String nome_usuario) {
 
+    private void updateUI(FirebaseUser user,String nome_usuario) {
         finish();
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
+        //myRef.removeEventListener(value_listener);
     }
 
 

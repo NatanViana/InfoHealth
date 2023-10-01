@@ -8,43 +8,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:846739071417:android:9790876d1a76c4ea92d668",
-        "android_client_info": {
-          "package_name": "com.example.infohealth"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "846739071417-hunsgj7k93qb92mikqie4o4enqleajgd.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.infohealth",
-            "certificate_hash": "5ceffc273c406698cc0d7054b5e5a0ac99b75f92"
-          }
-        },
-        {
-          "client_id": "846739071417-b1fci12rqjjs3o3s4frilbrmoda2p0qa.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBKQ6d9bbPTkLPnYHs-vd6Ve5oqGCDTOZA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "846739071417-885dk8u6n50467buocuo0obb7f9g8s2a.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:846739071417:android:5a3ff681274ec7bb92d668",
         "android_client_info": {
           "package_name": "com.tccnatan.infohealth"

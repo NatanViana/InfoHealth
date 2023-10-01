@@ -149,12 +149,12 @@ public class login extends AppCompatActivity {
 
         }
         // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .requestScopes(new Scope("https://www.googleapis.com/auth/user.birthday.read"))
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
+        //GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                //.requestIdToken(getString(R.string.default_web_client_id))
+                //.requestEmail()
+                //.requestScopes(new Scope("https://www.googleapis.com/auth/user.birthday.read"))
+                //.build();
+        //mGoogleSignInClient = GoogleSignIn.getClient(this,gso);
 
         //Getting the button click
         google.setOnClickListener(new View.OnClickListener() {
