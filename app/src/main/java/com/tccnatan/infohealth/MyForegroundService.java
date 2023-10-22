@@ -128,9 +128,12 @@ public class MyForegroundService  extends Service {
    public Boolean alert_flag = true;
 
    Boolean notify_control = false;
+
+   Boolean simulateLowResources = false;
    private final long[] pattern ={100, 300, 300, 300};
 
    Calendar ref_day;
+   Calendar atualizacao_semanal = Calendar.getInstance();
 
     // Definindo o formato da data desejado
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -297,6 +300,7 @@ public class MyForegroundService  extends Service {
                         ler_dados_single(myRef,"Analises");
                         ler_dados(myRef,"Localização");
                         ler_dados(myRef, "Alert");
+                        //ler_dados(myRef, "RecursosBaixo");  //usada no user teste.
                         ler_dados_single(myRef,"Ofensiva");
                         ler_dados_single(myRef,"Estado Atual");
                         ler_dados_single(myRef,"Flag Resposta");
@@ -317,6 +321,15 @@ public class MyForegroundService  extends Service {
                         }
 
                         while(servicerunning){
+
+                            /*if (simulateLowResources) {
+                                // Simule a falta de recursos encerrando o serviço
+                                servicerunning = false;
+                                System.out.println("Matando o serviço");
+                                stopForeground(true);
+                                stopSelf();
+                                break;
+                            }*/
 
                             System.out.println("Foreground Service is running...");
                             //int flag_estado = printMensagemAposUmMinuto();
@@ -467,15 +480,42 @@ public class MyForegroundService  extends Service {
                                 }
 
                                 currentState = nextState;
-                                //variaveis novas firebase
+                                //variaveis novas firebase estado novo
                                 myRef.child("Users").child(user.getUid()).child("Estado Atual").setValue(currentState);
+                                // Resetar Notificação pars None novamente.
+                                myRef.child("Users").child(user.getUid()).child("Alert").child("alert").setValue("None");
 
-                                if(0<=currentState && currentState<=2 && gravar_semana == true ){
+
+                                //validação de atualização de dados semanais na analise do firebase
+                                Calendar dataAtual = Calendar.getInstance();
+                                Calendar proxima_atualizacao = Calendar.getInstance();
+                                proxima_atualizacao.setTime(atualizacao_semanal.getTime());
+
+
+                                String d1 = dateFormat.format(dataAtual.getTime());
+                                proxima_atualizacao.add(Calendar.WEEK_OF_YEAR, 1);
+                                String d2 = dateFormat.format(proxima_atualizacao.getTime());
+                                System.out.println("Data_Atual " +  d1 + " Data_prox_atualizacao "+ d2);
+
+
+
+                                if(!(dataAtual.equals(proxima_atualizacao))){
+                                    System.out.println("jnjnnnj");
+                                    if(gravar_semana == false){
+                                        gravar_semana = true;
+                                        myRef.child("Users").child(user.getUid()).child("Analises").child("Gravar Semana").setValue(true);
+                                    }
+                                }
+
+                                if(/*0<=currentState && currentState<=2*/ (dataAtual.after(proxima_atualizacao) || dataAtual.equals(proxima_atualizacao)) && gravar_semana == true ){
+                                    atualizacao_semanal.setTime(proxima_atualizacao.getTime());
                                     System.out.println("Reward Total: "+reward_total);
                                     semanas = semanas + 1;
                                     System.out.println("Semanas Passadas: "+ semanas);
                                     System.out.println("Notificações da Semana: " + notification_weeek );
+                                    String atualizacaoFormatada = dateFormat.format(proxima_atualizacao.getTime());
                                     //para analíses
+                                    myRef.child("Users").child(user.getUid()).child("Analises").child("UltimoUpdate").setValue(atualizacaoFormatada);
                                     myRef.child("Users").child(user.getUid()).child("Analises").child("SEMANA").setValue(semanas);
                                     myRef.child("Users").child(user.getUid()).child("Analises").child("Semanas").child(""+semanas).child("Notificações").setValue(not_respondidas_week+not_ignoradas_week);
                                     myRef.child("Users").child(user.getUid()).child("Analises").child("Semanas").child(""+semanas).child("Recompensa_Total").setValue(reward_total);
@@ -494,7 +534,8 @@ public class MyForegroundService  extends Service {
                                     myRef.child("Users").child(user.getUid()).child("Analises").child("Gravar Semana").setValue(false);
 
                                 }
-                                else{
+                                proxima_atualizacao.add(Calendar.WEEK_OF_YEAR, -1);
+                                /*else{
 
                                     if(currentState>=3){
 
@@ -506,7 +547,7 @@ public class MyForegroundService  extends Service {
                                         }
                                     }
 
-                                }
+                                }*/
 
 
 
@@ -517,15 +558,8 @@ public class MyForegroundService  extends Service {
                                 // Flag no firebase para mandar notificação -> caso em false o app tem permissão novamente para mandar.
                                 myRef.child("Users").child(user.getUid()).child("Alert").child("Flag").setValue(false);
                                 alert_flag = false;
-                                myRef.child("Users").child(user.getUid()).child("Alert").child("alert").setValue("None");
-                                boolean simulateLowResources = false; // Simular falta de recursos
-                                if (simulateLowResources) {
-                                    // Simule a falta de recursos encerrando o serviço
-                                    servicerunning = false;
-                                    System.out.println("Matando o serviço");
-                                    stopForeground(true);
-                                    stopSelf();
-                                }
+                                //boolean simulateLowResources = false; // Simular falta de recursos
+
                             }
 
                         }
@@ -581,6 +615,13 @@ public class MyForegroundService  extends Service {
                     longitude_casa = Double.parseDouble(longc);
                     latitude_trabalho = Double.parseDouble(latt);
                     longitude_trabalho = Double.parseDouble(longt);
+
+
+                }
+                if (variavel == "RecursosBaixo") {
+
+                    // Simulação Recursos Baixo só no user teste
+                    simulateLowResources = Boolean.valueOf(""+ dataSnapshot.getValue());
 
 
                 }
@@ -723,6 +764,20 @@ public class MyForegroundService  extends Service {
                     String val2 = "" + String.valueOf(dataSnapshot.child("Gravar Semana").getValue());
                     gravar_semana =  Boolean.valueOf(val2);
 
+                    String val3 = "" + String.valueOf(dataSnapshot.child("UltimoUpdate").getValue());
+
+                    // Convertendo a data de acesso do Firebase para um objeto Date
+                    Date data = null;
+                    try {
+                        data = dateFormat.parse(val3);
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    // Convertendo o objeto Date para Calendar
+                    atualizacao_semanal = Calendar.getInstance();
+                    atualizacao_semanal.setTime(data);
+
 
                 }
                 if(variavel == "Estado Atual"){
@@ -783,7 +838,7 @@ public class MyForegroundService  extends Service {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
-        long intervalMillis = 1 * 60 * 1000; // 5 minutos
+        long intervalMillis = 3 * 60 * 1 * 60 * 1000; // 3 horas
 
         if (alarmManager != null) {
             // Cancelar alarme anterior (se existir)
@@ -812,10 +867,14 @@ public class MyForegroundService  extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        stopForeground(true);
+        stopSelf();
+        System.out.println("DESTRUINDO");
         myRef.removeEventListener(value_listener);
         if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
         }
+
     }
 
     @Nullable

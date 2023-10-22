@@ -61,8 +61,12 @@ import java.io.IOException;
 import android.location.Address;
 import android.location.Geocoder;
 
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -184,9 +188,9 @@ public class MainActivity extends AppCompatActivity {
             myRef = database.getReference();
             textView.setText(user.getDisplayName());
             ler_dados(myRef, "Alert");
-            ler_dados(myRef, "Comorbidade");
+            ler_dados_single(myRef, "Comorbidade");
             ler_dados(myRef, "Ofensiva");
-            ler_dados(myRef, "Idade");
+            ler_dados_single(myRef, "Idade");
             ler_dados(myRef, "Nº notificações");
             ler_dados(myRef,"Localização");
 
@@ -225,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+
         if(!foregroundServiceRunning()){
             // Inicie o serviço de foreground
             serviceIntent = new Intent(this,MyForegroundService.class);
@@ -239,8 +244,20 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //textView.setText(respondidas);
                 //Sortear o PROM com P1 P2 P3  em novas versões..
-                Quiz("P1",respondidas);
+                // Crie um objeto Random
+                Random random = new Random();
 
+                // Gere um número aleatório 0 ou 1
+                int valorAleatorio = random.nextInt(2);
+
+                // Atribua a string correspondente com base no valor gerado
+                String escolha;
+                if (valorAleatorio == 0) {
+                    escolha = "P1";
+                } else {
+                    escolha = "P2";
+                }
+                Quiz(escolha,respondidas);
 
             }
         });
@@ -360,6 +377,41 @@ public class MainActivity extends AppCompatActivity {
 
 
                 }
+                if(variavel=="Ofensiva"){
+                    String ofensiva_text = ""+ dataSnapshot.getValue();
+                    ofensiva.setText(ofensiva_text);
+
+                }
+                if(variavel=="Localização"){
+                    String endereço_casa = ""+ dataSnapshot.child("Casa").child("Rua").getValue()+", "+ dataSnapshot.child("Casa").child("Nº").getValue();
+                    //+", "+ dataSnapshot.child("Cidade").getValue()+", "+ dataSnapshot.child("País").getValue()
+
+                    String endereço_trabalho = ""+ dataSnapshot.child("Trabalho").child("Rua").getValue()+", "+dataSnapshot.child("Trabalho").child("Nº").getValue() ;
+                    //+", "+ dataSnapshot.child("Cidade").getValue()+", "+ dataSnapshot.child("País").getValue()
+
+                    LocalizationConvertion(endereço_casa,"casa",myRef);
+                    LocalizationConvertion(endereço_trabalho,"trabalho",myRef);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+
+            }
+
+        });
+
+    }
+
+    public void ler_dados_single(DatabaseReference myRef,String variavel) {
+
+        myRef.child("Users").child(user.getUid()).child(variavel).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
                 if(variavel=="Idade"){
                     String idade_text = ""+ dataSnapshot.getValue();
                     if(idade_text!=""){
@@ -378,22 +430,8 @@ public class MainActivity extends AppCompatActivity {
                     saúde.setText(comorbidade_text);
 
                 }
-                if(variavel=="Localização"){
-                    String endereço_casa = ""+ dataSnapshot.child("Casa").child("Rua").getValue()+", "+ dataSnapshot.child("Casa").child("Nº").getValue();
-                    //+", "+ dataSnapshot.child("Cidade").getValue()+", "+ dataSnapshot.child("País").getValue()
-
-                    String endereço_trabalho = ""+ dataSnapshot.child("Trabalho").child("Rua").getValue()+", "+dataSnapshot.child("Trabalho").child("Nº").getValue() ;
-                    //+", "+ dataSnapshot.child("Cidade").getValue()+", "+ dataSnapshot.child("País").getValue()
-
-                    LocalizationConvertion(endereço_casa,"casa",myRef);
-                    LocalizationConvertion(endereço_trabalho,"trabalho",myRef);
-
-
-
-                }
 
             }
-
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
@@ -401,7 +439,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-
     }
 
 

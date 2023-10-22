@@ -258,7 +258,9 @@ public class login extends AppCompatActivity {
                                             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                                             // Obtendo a data formatada como uma string
                                             String dataFormatada = dateFormat.format(calendar.getTime());
-
+                                            calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+                                            String dataAtualizacaoFormatada = dateFormat.format(calendar.getTime());
+                                            myRef.child("Users").child(user.getUid()).child("Analises").child("UltimoUpdate").setValue(dataAtualizacaoFormatada);
                                             myRef.child("Users").child(user.getUid()).child("Data de Acesso").setValue(dataFormatada);
                                             myRef.child("Users").child(user.getUid()).child("Data de Referencia").setValue(dataFormatada);
                                             myRef.child("Users").child(user.getUid()).child("Ofensiva").setValue("0");
@@ -378,7 +380,9 @@ public class login extends AppCompatActivity {
                             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                             // Obtendo a data formatada como uma string
                             String dataFormatada = dateFormat.format(calendar.getTime());
-
+                            calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+                            String dataAtualizacaoFormatada = dateFormat.format(calendar.getTime());
+                            myRef.child("Users").child(user.getUid()).child("Analises").child("UltimoUpdate").setValue(dataAtualizacaoFormatada);
                             myRef.child("Users").child(user.getUid()).child("Data de Acesso").setValue(dataFormatada);
                             myRef.child("Users").child(user.getUid()).child("Data de Referencia").setValue(dataFormatada);
                             myRef.child("Users").child(user.getUid()).child("Ofensiva").setValue("0");

@@ -224,7 +224,15 @@ public class Quiz extends AppCompatActivity {
                 R3.setText(r3);
                 tipo.setText(type);
                 n_questao.setText("Questão "+questao+" de 5");
-                text_questao.setText("Escolha a opção que melhor descreve sua "+ type +" atualmente");
+
+                if(prom.equals("P1")){
+                    text_questao.setText("Escolha a opção que melhor descreve sua "+ type +" atualmente");
+                }
+                else{
+                    if(prom.equals("P2")) {
+                        text_questao.setText("Como você classifica sua " + type + " atualmente");
+                    }
+                }
 
                 confirmar.setClickable(false);
                 confirmar.setAlpha(0.5F);
